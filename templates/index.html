@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liver Health Predictor</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6">Liver Health Predictor</h2>
+        <form method="post" action="/predict" accept-charset="utf-8">
+            <div class="mb-4">
+                <label for="number1" class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                <input type="number" min="0" id="number1" name="Age" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="number2" class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                <p class="text-sm text-gray-500 mb-2">0 stands for males, 1 for females</p>
+                <select id="number2" name="Gender" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+                    {% for gender in Gender %}
+                        <option value="{{gender}}">{{gender}}</option>
+                    {% endfor %}
+                    <!-- <option value="Male">Male</option>
+                    <option value="Female">Female</option> -->
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="number3" class="block text-sm font-medium text-gray-700 mb-1">Total Bilirubin</label>
+                <input type="number" step="any" min="0" id="number3" name="Total_Bilirubin" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="number4" class="block text-sm font-medium text-gray-700 mb-1">Direct Bilirubin</label>
+                <input type="number" step="any" min="0" id="number4" name="Direct_Bilirubin" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="number5" class="block text-sm font-medium text-gray-700 mb-1">Alkaline Phosphotase</label>
+                <input type="number" step="any" min="0" id="number5" name="Alkaline_Phosphotase" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="number6" class="block text-sm font-medium text-gray-700 mb-1">Alamine Aminotransferase (ALT)</label>
+                <input type="number" step="any" min="0" id="number6" name="Alamine_Aminotransferase" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="number7" class="block text-sm font-medium text-gray-700 mb-1">Aspartate Aminotransferase (AST)</label>
+                <input type="number" step="any" min="0" id="number7" name="Aspartate_Aminotransferase" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="number8" class="block text-sm font-medium text-gray-700 mb-1">Total Protiens</label>
+                <input type="number" step="any" min="0" id="number8" name="Total_Protiens" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="number9" class="block text-sm font-medium text-gray-700 mb-1">Albumin</label>
+                <input type="number" step="any" min="0" id="Albumin" name="Albumin" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="number10" class="block text-sm font-medium text-gray-700 mb-1">Albumin and Globulin Ratio</label>
+                <input type="number" step="any" min="0" id="number10" name="Albumin_and_Globulin_Ratio" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50" onclick="predict(event)">Predict</button>
+        </form>
+        <div id="prediction-result" class="mt-6 p-4 bg-gray-100 border border-gray-300 rounded-md shadow-sm">
+            <h3 class="text-lg font-semibold mb-2">Prediction Result:</h3>
+            <p id="prediction" class="text-gray-700">Your prediction will be shown here.</p>
+        </div>
+    </div>
+</body>
+<script>
+    function predict(e) {
+        document.querySelector('form').addEventListener('submit', (e) => (e.preventDefault()))
+
+        const form_data = new FormData(document.querySelector('form'));
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', '/predict', true);
+        document.getElementById("prediction").innerHTML = "Wait! Predicting your Liver Health👨‍⚕️"
+
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState == XMLHttpRequest.DONE) {
+                console.log(xhr.responseText);
+                if (xhr.responseText == 1) {
+                    document.getElementById("prediction").innerHTML = "Prediction: You Have Liver Disease.\nIt's better to consult Hepatologist.";
+                } else {
+                    document.getElementById("prediction").innerHTML = "Prediction: You do not have Liver Disease.\nIt's still better to consult Hepatologist.";
+                }
+                
+            }
+        }
+
+        xhr.onload = function(){};
+        xhr.send(form_data)
+    }
+</script>
+</html>
