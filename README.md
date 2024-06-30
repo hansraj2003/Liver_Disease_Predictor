@@ -13,6 +13,7 @@ This project is an example of supervised learning, where the algorithm learns fr
 ## Technologies and Frameworks Used
 
 - **Python**: Programming language used for data processing and model building.
+- **Jupyter Notebook**: Interactive environment for developing and running code.
 - **[Pandas](https://pandas.pydata.org/)**: Data manipulation and analysis library.
 - **[NumPy](https://numpy.org/)**: Library for numerical computations.
 - **[Matplotlib](https://matplotlib.org/)**: Plotting library for data visualization.
